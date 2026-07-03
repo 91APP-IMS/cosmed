@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>IMS 通路版操作手冊｜康是美（優化提案）</title>
+<style>
+:root{
+  --brand:#0a7d5c;
+  --brand-dark:#065f47;
+  --brand-light:#e6f5ef;
+  --accent:#e0762c;
+  --bg:#f7f8f7;
+  --panel:#ffffff;
+  --border:#e2e5e3;
+  --text:#1f2a24;
+  --text-mute:#5b6b62;
+  --req:#c0392b;
+  --opt:#8a94a6;
+  --radius:10px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ---------- Header ---------- */
+header{position:sticky;top:0;z-index:50;background:var(--brand);color:#fff;padding:0 20px;box-shadow:var(--shadow)}
+.header-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:16px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;white-space:nowrap}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.search-wrap{flex:1;max-width:520px;position:relative}
+.search-wrap input{width:100%;padding:9px 14px 9px 36px;border-radius:20px;border:none;font-size:14px;background:rgba(255,255,255,.15);color:#fff;outline:none}
+.search-wrap input::placeholder{color:rgba(255,255,255,.75)}
+.search-wrap input:focus{background:#fff;color:var(--text)}
+.search-wrap input:focus::placeholder{color:var(--text-mute)}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.8;font-size:14px}
+#searchResults{position:absolute;top:44px;left:0;right:0;background:#fff;color:var(--text);border-radius:8px;box-shadow:var(--shadow);max-height:400px;overflow:auto;display:none;z-index:60}
+#searchResults div{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;font-size:13px}
+#searchResults div:hover{background:var(--brand-light)}
+#searchResults .sr-path{color:var(--text-mute);font-size:11px;margin-top:2px}
+.view-toggle{display:flex;background:rgba(255,255,255,.15);border-radius:20px;padding:3px;flex-shrink:0}
+.view-toggle button{border:none;background:transparent;color:#fff;padding:7px 14px;border-radius:16px;font-size:13px;cursor:pointer;font-weight:600}
+.view-toggle button.active{background:#fff;color:var(--brand)}
+.print-btn{background:rgba(255,255,255,.15);border:none;color:#fff;padding:8px 12px;border-radius:16px;font-size:13px;cursor:pointer;white-space:nowrap}
+.print-btn:hover{background:rgba(255,255,255,.28)}
+
+/* ---------- Layout ---------- */
+.layout{max-width:1400px;margin:0 auto;display:flex;gap:0;align-items:flex-start}
+nav#sidebar{width:280px;flex-shrink:0;position:sticky;top:60px;max-height:calc(100vh - 60px);overflow-y:auto;padding:18px 10px 40px 18px;border-right:1px solid var(--border)}
+main{flex:1;min-width:0;padding:24px 32px 80px}
+
+.nav-group{margin-bottom:4px}
+.nav-group>a{display:block;padding:9px 10px;border-radius:8px;font-weight:700;font-size:14px;color:var(--text)}
+.nav-group>a:hover{background:var(--brand-light);text-decoration:none}
+.nav-group.active>a{background:var(--brand-light);color:var(--brand-dark)}
+.nav-sub{margin:2px 0 8px 10px;border-left:2px solid var(--border);padding-left:10px}
+.nav-sub a{display:block;padding:5px 8px;font-size:13px;color:var(--text-mute);border-radius:6px}
+.nav-sub a:hover{background:var(--brand-light);text-decoration:none;color:var(--brand-dark)}
+.nav-sub a.active{color:var(--brand-dark);font-weight:700;background:var(--brand-light)}
+
+#taskView{display:none}
+.task-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow)}
+.task-card h4{margin:0 0 6px;font-size:15px}
+.task-card p{margin:0 0 10px;color:var(--text-mute);font-size:13px}
+.task-card .links a{display:inline-block;margin:0 8px 6px 0;font-size:13px;background:var(--brand-light);color:var(--brand-dark);padding:5px 10px;border-radius:14px}
+.task-card .links a:hover{background:var(--brand);color:#fff;text-decoration:none}
+
+/* ---------- Content ---------- */
+.crumb{font-size:12px;color:var(--text-mute);margin-bottom:6px}
+.section{scroll-margin-top:75px;margin-bottom:52px}
+.section>h2{font-size:22px;margin:0 0 4px;padding-bottom:10px;border-bottom:3px solid var(--brand);display:flex;align-items:center;gap:10px}
+.section>h2 .num{background:var(--brand);color:#fff;width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
+.section>.desc{color:var(--text-mute);font-size:14px;margin:10px 0 20px}
+.topic{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow);scroll-margin-top:75px}
+.topic h3{font-size:16px;margin:0 0 8px;color:var(--brand-dark)}
+.topic p{margin:6px 0;font-size:14px}
+.topic ul{margin:6px 0;padding-left:20px;font-size:14px}
+.topic li{margin:3px 0}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-right:6px}
+.badge.single{background:#e8f0fe;color:#1a56b0}
+.badge.batch{background:#fdf0e3;color:#a15c07}
+.badge.note{background:#f1f1f1;color:#666}
+
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13px}
+table caption{text-align:left;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--brand-dark)}
+th,td{border:1px solid var(--border);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:var(--brand-light);color:var(--brand-dark);font-weight:700}
+tr:nth-child(even) td{background:#fafbfa}
+.req{color:var(--req);font-weight:700}
+.opt{color:var(--opt)}
+
+details{background:var(--panel);border:1px solid var(--border);border-radius:8px;margin:8px 0;padding:0}
+details summary{cursor:pointer;padding:10px 14px;font-size:14px;font-weight:600;color:var(--brand-dark);list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary:before{content:"▸ ";color:var(--brand)}
+details[open] summary:before{content:"▾ "}
+details .d-body{padding:0 16px 14px 30px;font-size:13.5px}
+details .d-body ul{margin:4px 0;padding-left:18px}
+details .d-body li{margin:3px 0}
+
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0;font-size:13px}
+.flow .step{background:var(--brand-light);border:1px solid var(--brand);color:var(--brand-dark);padding:8px 14px;border-radius:20px;font-weight:600;white-space:nowrap}
+.flow .arrow{color:var(--brand);font-size:16px}
+
+.glossary-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.glossary-grid{grid-template-columns:1fr}}
+.gterm{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+.gterm h4{margin:0 0 6px;font-size:14px;color:var(--brand-dark)}
+.gterm p{margin:0;font-size:13px;color:var(--text)}
+
+.callout{background:#fff8ec;border:1px solid #f0d9a8;border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;font-size:13px;margin:10px 0}
+.faq-filter{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.faq-filter button{border:1px solid var(--border);background:#fff;padding:6px 12px;border-radius:16px;font-size:12px;cursor:pointer}
+.faq-filter button.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.faq-item{display:block}
+.faq-item.hidden{display:none}
+
+.hero{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;border-radius:16px;padding:28px 30px;margin-bottom:26px}
+.hero h1{margin:0 0 8px;font-size:24px}
+.hero p{margin:0;opacity:.9;font-size:14px;max-width:720px}
+.hero .tag{display:inline-block;background:rgba(255,255,255,.18);padding:4px 10px;border-radius:12px;font-size:11px;margin-bottom:10px}
+
+.footer-note{color:var(--text-mute);font-size:12px;text-align:center;padding:30px 0 60px}
+
+.shot{margin:12px 0;display:flex;gap:10px;flex-wrap:wrap;background:#fafbfa;border:1px solid var(--border);border-radius:8px;padding:10px}
+.shot img{max-width:270px;max-height:200px;object-fit:contain;border:1px solid var(--border);border-radius:6px;cursor:zoom-in;background:#fff}
+.shot img:hover{outline:2px solid var(--brand)}
+.shot figcaption{width:100%;font-size:11px;color:var(--text-mute);margin-top:2px}
+#lightboxOverlay{display:none;position:fixed;inset:0;background:rgba(10,20,15,.88);z-index:500;align-items:center;justify-content:center;cursor:zoom-out}
+#lightboxOverlay img{max-width:92vw;max-height:92vh;border-radius:6px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+mark{background:#ffe28a;padding:0 2px;border-radius:2px}
+
+@media print{
+  header,#sidebar,.print-btn,.search-wrap,.view-toggle{display:none!important}
+  main{padding:0}
+  .topic,details{break-inside:avoid}
+}
+@media (max-width:860px){
+  #sidebar{display:none}
+  main{padding:18px}
+  .header-inner{flex-wrap:wrap;height:auto;padding:10px 0}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand"><span class="dot"></span>IMS 操作手冊・康是美</div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input id="searchBox" type="text" placeholder="搜尋功能、欄位、錯誤訊息…（例如：詳細說明字數上限）">
+      <div id="searchResults"></div>
+    </div>
+    <div class="view-toggle">
+      <button class="active" data-view="module">依模組瀏覽</button>
+      <button data-view="task">依情境瀏覽</button>
+    </div>
+    <button class="print-btn" onclick="window.print()">🖨 匯出 PDF</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav id="sidebar">
+    <div class="nav-group"><a href="#quickstart">🚀 新手上路</a></div>
+
+    <div class="nav-group"><a href="#login">0. 登入與手冊使用</a>
+      <div class="nav-sub">
+        <a href="#login-platform">登入平台</a>
+        <a href="#login-forgot">忘記密碼</a>
+        <a href="#login-manual">手冊路徑</a>
+      </div>
+    </div>
+
+    <div class="nav-group"><a href="#intro">1. IMS 介紹</a>
+      <div class="nav-sub">
+        <a href="#intro-flow">服務路徑</a>
+        <a href="#intro-terms">名詞解釋</a>
+      </div>
+    </div>
+
+    <div class="nav-group"><a href="#product">2. 商品管理</a>
+      <div class="nav-sub">
+        <a href="#product-single">單筆：新增／複製／改貨號／贈品</a>
+        <a href="#product-batch">批次：新增／編輯資料／編輯選項／上傳主圖</a>
+        <a href="#store-manage">賣場管理：編輯與上架</a>
+        <a href="#store-listing-report">供應商上架提報單</a>
+      </div>
+    </div>
+
+    <div class="nav-group"><a href="#change">3. 賣場異動管理</a>
+      <div class="nav-sub">
+        <a href="#change-new">新增賣場異動提報</a>
+        <a href="#change-data-form">賣場資料提報單</a>
+        <a href="#change-price-form">賣場售價提報單</a>
+        <a href="#change-report-status">供應商異動提報單／狀態機</a>
+        <a href="#change-batch">批次功能（售價／主圖／資料／選項／編號）</a>
+        <a href="#change-faq">提報單常見問題</a>
+      </div>
+    </div>
+
+    <div class="nav-group"><a href="#inventory">4. 庫存管理</a>
+      <div class="nav-sub">
+        <a href="#inv-query">可賣量查詢</a>
+        <a href="#inv-history">可賣量修改歷程</a>
+      </div>
+    </div>
+
+    <div class="nav-group"><a href="#order">5. 訂單管理</a></div>
+    <div class="nav-group"><a href="#ship">6. 出貨管理</a></div>
+    <div class="nav-group"><a href="#return">7. 退貨管理</a></div>
+    <div class="nav-group"><a href="#report">8. 報表管理</a></div>
+    <div class="nav-group"><a href="#system">9. 系統功能</a></div>
+
+    <div class="nav-group"><a href="#glossary">📖 名詞與欄位對照</a></div>
+    <div class="nav-group"><a href="#faq">❓ 常見問題總表</a></div>
+    <div class="nav-group"><a href="#changelog">🕘 更新紀錄</a></div>
+  </nav>
+
+  <main>
+    <!-- ============ MODULE VIEW ============ -->
+    <div id="moduleView">
+
+    <div class="hero" id="top">
+      <span class="tag">優化提案・依資訊架構最佳實踐重新設計</span>
+      <h1>IMS 通路版操作手冊（供應商人員）</h1>
+      <p>提供給康是美供應商人員使用。這個版本把原本 169 頁投影片的內容，重新整理成「可搜尋、可依情境查找」的網頁手冊——新增了全文搜尋、依任務情境瀏覽、常見問題總表與名詞對照表，讓你不用從頭翻頁也能找到答案。</p>
+    </div>
+
+    <section class="section" id="quickstart">
+      <h2><span class="num">🚀</span>新手上路：5 步驟看懂 IMS</h2>
+      <p class="desc">第一次使用 IMS 嗎？先看懂這張流程圖，就能掌握「商品上架」到「售後異動」的完整生命週期。</p>
+      <div class="flow">
+        <div class="step">① 建立商品主檔</div><span class="arrow">→</span>
+        <div class="step">② 轉出賣場檔</div><span class="arrow">→</span>
+        <div class="step">③ 編輯賣場並上架提報</div><span class="arrow">→</span>
+        <div class="step">④ 通路審核通過 → 官網上架</div><span class="arrow">→</span>
+        <div class="step">⑤ 上架後如需改資料/改價 → 發起異動提報單</div>
+      </div>
+      <div class="callout">💡 判斷原則：<b>還沒上架</b> → 回商品主檔／賣場頁直接編輯即可；<b>已經上架</b> → 一律要透過「異動提報單」送審，不能直接改。可賣量（庫存）例外，任何時候都能直接改，不需審核。</div>
+    </section>
+
+    <!-- 0. 登入 -->
+    <section class="section" id="login">
+      <h2><span class="num">0</span>登入與手冊使用</h2>
+      <div class="topic" id="login-platform"><h3>登入平台</h3><p>進到 IMS 後台。如有新成員要加入，請通知系統商人員協助開帳號。</p><figure class="shot"><img src="img/s004_1.png" alt="登入後台首頁" loading="lazy" onclick="lightbox(this)"><img src="img/s004_2.png" alt="IMS 商品主檔管理列表" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：登入後台首頁、IMS 商品主檔管理列表</figcaption></figure></div>
+      <div class="topic" id="login-forgot"><h3>忘記密碼</h3><p>如忘記密碼，可透過信箱重新設定。</p><figure class="shot"><img src="img/s005_1.png" alt="忘記密碼設定畫面" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：忘記密碼設定畫面</figcaption></figure></div>
+      <div class="topic" id="login-manual"><h3>手冊路徑</h3><p>在供應商服務平台的 Header，可以分別前往：批次作業中心／操作手冊／公告通知。</p><figure class="shot"><img src="img/s006_1.png" alt="供應商服務平台 Header 導覽" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：供應商服務平台 Header 導覽</figcaption></figure>
+        <p class="callout">📌 2024/10/16 更新：IMS 側欄名稱已調整（供應商角度／通路角度的命名皆有變動），若手冊截圖與畫面文字不同，請以系統畫面為準。</p>
+      </div>
+    </section>
+
+    <!-- 1. IMS 介紹 -->
+    <section class="section" id="intro">
+      <h2><span class="num">1</span>IMS 介紹</h2>
+      <div class="topic" id="intro-flow">
+        <h3>服務路徑總覽</h3>
+        <div class="flow">
+          <div class="step">新增商品主檔</div><span class="arrow">→</span>
+          <div class="step">轉出賣場</div><span class="arrow">→</span>
+          <div class="step">上架提報 → 審核</div><span class="arrow">→</span>
+          <div class="step">官網前台建立商品頁</div>
+        </div>
+        <div class="flow">
+          <div class="step">已上架賣場</div><span class="arrow">→</span>
+          <div class="step">批次改可賣量 / 批次改價 / 資料異動提報</div><span class="arrow">→</span>
+          <div class="step">（改價/改資料需審核）</div><span class="arrow">→</span>
+          <div class="step">更新前台</div>
+        </div>
+        <p>其中「批次改資料」「批次改可賣量」「批次改外部編號」屬於<b>不需審核、直接更新</b>的操作；「改主圖、改資料、新增選項」屬於<b>資料異動提報</b>，需要審核。</p>
+      </div>
+      <div class="topic" id="intro-terms">
+        <h3>名詞解釋：商品 vs 賣場</h3>
+        <p>商品主檔轉出後，產生賣場檔；賣場檔編輯完後，上架到通路成為正式賣場。</p>
+        <div class="flow">
+          <div class="step">商品主檔</div><span class="arrow">→轉出→</span>
+          <div class="step">賣場檔（草稿）</div><span class="arrow">→</span>
+          <div class="step">賣場檔（編輯完成）</div><span class="arrow">→上架→</span>
+          <div class="step">賣場檔（已上架）</div>
+        </div>
+        <ul>
+          <li><b>商品主檔</b>：商品的基本資訊，可多次轉出賣場檔；商品主檔與賣場檔的編輯內容互不同步。</li>
+          <li><b>賣場檔</b>：從商品檔轉出而成，需填寫對應資料才能正式上架提報。<b>一個 IMS 賣場檔 = 一個官網商品頁</b>。</li>
+          <li>在賣場頁點擊「上架」後，會產生一張<b>上架提報單</b>，須審核通過才會在官網建立商品頁，消費者才能下單結帳。</li>
+        </ul>
+        <h3 style="margin-top:18px">名詞解釋：上架流程 vs 異動流程</h3>
+        <ul>
+          <li><b>上架流程</b>：商品主檔 → 供應商轉出 → 未上架賣場 → 供應商上架提報單 → 通路審核通過 → 同步建立 OSM 商品頁</li>
+          <li><b>異動流程</b>：已上架賣場 → 供應商異動提報單送審 → 通路審核通過 → 同步更新 OSM 商品頁</li>
+          <li><b>上游</b>＝通路（負責審核）；<b>下游</b>＝供應商（負責提報）</li>
+          <li><b>IMS 商品</b> = 只存在在 IMS 的商品主檔；<b>IMS 賣場</b> = OSM 商品頁</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 2. 商品管理 -->
+    <section class="section" id="product">
+      <h2><span class="num">2</span>商品管理</h2>
+      <p class="desc">商品主檔管理：建立商品、轉出賣場。賣場管理：編輯賣場、上架賣場。供應商上架提報單：查看上架審核狀態。</p>
+
+      <div class="topic" id="product-single">
+        <h3><span class="badge single">單筆</span>新增商品、複製商品、修改貨號、贈品建檔</h3>
+        <p>若要上架商品，需要先在「商品主檔管理」建立商品主檔，可從 [商品 > 商品主檔管理] 頁面點擊 [新增商品]。點擊「儲存」才會建立商品，未儲存直接關閉頁面則不建立。</p><figure class="shot"><img src="img/s013_1.png" alt="商品主檔管理查詢頁" loading="lazy" onclick="lightbox(this)"><img src="img/s015_1.png" alt="新增商品編輯頁" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：商品主檔管理查詢頁、新增商品編輯頁</figcaption></figure>
+
+        <details><summary>商品的必填欄位（完整表格）</summary><div class="d-body">
+        <table><caption>基本資訊／商品主圖</caption>
+        <tr><th>區塊</th><th>標題</th><th>必填</th><th>限制</th></tr>
+        <tr><td>基本資訊</td><td>商品名稱</td><td class="req">必填</td><td>160 字</td></tr>
+        <tr><td>基本資訊</td><td>特色標題</td><td class="req">必填</td><td>20 字</td></tr>
+        <tr><td>基本資訊</td><td>商品特色</td><td class="req">必填</td><td>400 字</td></tr>
+        <tr><td>基本資訊</td><td>銷售重點</td><td class="req">必填</td><td>400 字</td></tr>
+        <tr><td>基本資訊</td><td>商品來源</td><td class="req">必填</td><td>—</td></tr>
+        <tr><td>基本資訊</td><td>履約模式</td><td class="req">必填</td><td>—</td></tr>
+        <tr><td>基本資訊</td><td>SPU編號</td><td>多選項時必填／無選項非必填</td><td>30 字，不可重複</td></tr>
+        <tr><td>基本資訊</td><td>原廠型號</td><td class="req">必填</td><td>—</td></tr>
+        <tr><td>基本資訊</td><td>ERP分類</td><td class="req">必填</td><td>—</td></tr>
+        <tr><td>商品主圖</td><td>圖片</td><td class="req">必填</td><td>10 張</td></tr>
+        <tr><td>商品主圖</td><td>影片</td><td class="req">必填</td><td>1 則</td></tr>
+        </table>
+        <table><caption>銷售資訊／詳細說明／商品分類／規格／SEO</caption>
+        <tr><th>區塊</th><th>標題</th><th>必填</th><th>限制</th></tr>
+        <tr><td>銷售資訊</td><td>銷售開始/結束日期</td><td class="req">必填</td><td>日期格式</td></tr>
+        <tr><td>銷售資訊</td><td>預購類型／指定到貨日期</td><td class="req">必填</td><td>日期格式</td></tr>
+        <tr><td>銷售資訊</td><td>溫層類別／是否免稅／商品材積</td><td class="req">必填</td><td>—</td></tr>
+        <tr><td>詳細說明</td><td>新增影片</td><td class="req">必填</td><td>1 則</td></tr>
+        <tr><td>詳細說明</td><td>詳細說明內文</td><td class="req">必填</td><td>10,000 字</td></tr>
+        <tr><td>商品分類</td><td>商品品類／商店類別</td><td class="req">必填</td><td>—</td></tr>
+        <tr><td>商品規格</td><td>商品規格</td><td class="req">必填</td><td>僅全形符號</td></tr>
+        <tr><td>SEO設定</td><td>title／keywords／description</td><td class="req">必填</td><td>120／120／400 字</td></tr>
+        </table>
+        <table><caption>商品選項</caption>
+        <tr><th>標題</th><th>必填</th><th>限制</th></tr>
+        <tr><td>商品選項／規格／圖片</td><td class="req">必填</td><td>—</td></tr>
+        <tr><td>國際條碼</td><td class="req">必填</td><td>200 字，可重複</td></tr>
+        <tr><td>貨號</td><td class="req">必填</td><td>200 字，不可重複</td></tr>
+        <tr><td>建議售價／售價／成本／可賣量／安全庫存量／一次最高購買量</td><td class="req">必填</td><td>僅能整數</td></tr>
+        </table>
+        <p class="callout">貨號一定要填；若商品為多選項，SPU 編號也必填。其他欄位填好後，轉出賣場時會直接帶入賣場檔。</p>
+        </div></details>
+
+        <details><summary>多選項商品：如何設定選項資料</summary><div class="d-body">
+          <p>編輯商品時，若該商品是多款多色，可在 [商品選項] 先勾選 [有選項]：① 選擇「有選項」→ ② 填入階層 → ③ 填入選項資料。</p>
+        </div><figure class="shot"><img src="img/s016_1.png" alt="設定商品選項階層與內容" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：設定商品選項階層與內容</figcaption></figure></details>
+
+        <details><summary>半形／全形符號規則</summary><div class="d-body">
+          <p>「商品選項規格」「商品規格」的欄位名稱與內容只能輸入<b>全形符號</b>，不能輸入「: ; , &lt;&gt;」等半形符號。若透過批次功能新增，分隔請用半形「:」，例如商品規格填「材質:有機棉」，二階賣場選項填「紅色:XL」。</p>
+        </div><figure class="shot"><img src="img/s017_1.png" alt="商品規格欄位全形符號範例" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：商品規格欄位全形符號範例</figcaption></figure></details>
+
+        <details><summary>轉出賣場後才發現資料填錯，怎麼辦？</summary><div class="d-body">
+          <p>商品主檔轉出賣場檔後，除了「貨號、SPU ID」以外，在商品主檔修改的資料都<b>不會同步</b>到已轉出的賣場檔。若賣場尚未送審，可以刪除剛才轉出的賣場檔，回商品主檔重新編輯後再轉出一次。支援直接點擊前往對應賣場檔。</p>
+        </div><figure class="shot"><img src="img/s018_1.png" alt="轉出賣場檔後的商品頁提示" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：轉出賣場檔後的商品頁提示</figcaption></figure></details>
+
+        <details><summary>複製商品：哪些欄位會被複製？</summary><div class="d-body">
+        <p>點擊列表的「複製」按鈕即可。商品名稱最後面會自動加上「- 複製」；<b>序號類欄位（SPU、貨號、國際條碼）一律不複製</b>，其餘欄位皆會複製。</p>
+        </div><figure class="shot"><img src="img/s020_1.png" alt="商品列表「複製」按鈕" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：商品列表「複製」按鈕</figcaption></figure></details>
+
+        <details><summary>修改貨號</summary><div class="d-body">
+          <p>從「商品主檔」修改貨號後，儲存即會<b>同步修改</b>對應賣場、以及過往所有訂單的貨號，此步驟不須審核。</p>
+        </div><figure class="shot"><img src="img/s023_1.png" alt="商品列表編輯入口" loading="lazy" onclick="lightbox(this)"><img src="img/s024_1.png" alt="貨號修改欄位" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：商品列表編輯入口、貨號修改欄位</figcaption></figure></details>
+
+        <details><summary>贈品建檔怎麼做？</summary><div class="d-body">
+        <table>
+        <tr><th>情境</th><th>建檔方式</th></tr>
+        <tr><td>僅作為活動贈品</td><td>依正常做法建商品/賣場；商品名稱統一「贈品-商品名稱」（如：贈品-洗手乳）；贈品可賣量一律為 0；匯出賣場檔時隱賣商品需修改為是。由 MD 提供贈品通路賣場ID、商品料號、庫存供康是美店長設定活動。</td></tr>
+        <tr><td>贈品同時當正常品販售</td><td>需建立兩個賣場（一個贈品、一個正常品），各自依上述規則建立。</td></tr>
+        </table>
+        </div><figure class="shot"><img src="img/s026_1.png" alt="贈品隱賣商品設定欄位" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：贈品隱賣商品設定欄位</figcaption></figure></details>
+      </div>
+
+      <div class="topic" id="product-batch">
+        <h3><span class="badge batch">批次</span>新增商品、編輯商品資料、編輯商品選項、上傳商品主圖</h3>
+
+        <details><summary>批次新增商品：範例檔規則</summary><div class="d-body">
+        <p>在 [商品主檔管理] 點擊 [批次新增商品] 下載 Excel 範例檔。檔案限制 xlsx，單檔 10MB，筆數上限 <b>50,000 筆</b>。藍色欄位必填，勿更改工作表名稱／欄位名稱。履約模式請填「預設倉履約」。不可重複新增相同貨號。若商品已存在 IMS，此功能不支援新增選項（僅可從介面單筆新增）。</p>
+        <p>必填欄位：貨號、履約模式、商品選項。延伸欄位（商品選項＝「有選項」才需填）：SPU編號、規格1、詳細規格1。</p>
+        </div><figure class="shot"><img src="img/s028_1.png" alt="下載批次新增商品範例檔" loading="lazy" onclick="lightbox(this)"><img src="img/s029_1.png" alt="範例檔欄位填寫示意" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：下載批次新增商品範例檔、範例檔欄位填寫示意</figcaption></figure></details>
+
+        <details><summary>批次新增商品：常見錯誤訊息</summary><div class="d-body"><ul>
+        <li>貨號：貨號重複／貨號已建檔過</li>
+        <li>履約模式：相同SPU編號，履約模式須相同</li>
+        <li>SPU編號：商品選項為「有」但未填SPU編號／SPU編號已建檔過</li>
+        <li>新增影片(商品主圖)：影片連結開頭不是 youtu.be</li>
+        <li>規格1／詳細規格1：同SPU規格須相同、不可重複；商品選項為「無」不可填規格</li>
+        <li>銷售開始/結束日期：格式錯誤；商品材積：須為正整數；91APP商品品類/商店類別：錯誤</li>
+        </ul></div><figure class="shot"><img src="img/s032_1.png" alt="批次作業中心匯入結果" loading="lazy" onclick="lightbox(this)"><img src="img/s033_1.png" alt="錯誤回檔範例" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：批次作業中心匯入結果、錯誤回檔範例</figcaption></figure></details>
+
+        <details><summary>批次編輯商品資料：可修改欄位</summary><div class="d-body">
+        <p>檔案限制 xlsx，單檔 10MB，筆數上限 2000 筆。<b>上傳後會整筆覆蓋</b>，欄位留空會被清空。<b>不支援</b>修改：SPU編號、商品選項、商品選項規格/圖片、國際條碼、貨號——若要新增規格或改貨號/SPU，須從介面單筆操作。其餘基本資訊、銷售資訊、詳細說明、商品分類、規格、SEO、售價/成本/可賣量等欄位皆可修改。</p>
+        </div><figure class="shot"><img src="img/s035_1.png" alt="批次編輯商品資料：匯出範圍設定" loading="lazy" onclick="lightbox(this)"><img src="img/s036_1.png" alt="上傳編輯後的 Excel" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：批次編輯商品資料：匯出範圍設定、上傳編輯後的 Excel</figcaption></figure></details>
+
+        <details><summary>批次編輯商品選項：修改 vs 新增</summary><div class="d-body">
+        <p><b>修改商品選項</b>：可改「詳細規格1、詳細規格2、選項順序」（例：銀色→星鑽銀）。<b>新增商品選項</b>：可針對一階或二階商品新增選項，SPU、階層須符合原有格式。</p>
+        <p class="callout">不支援修改「商品名稱、SPU、貨號、規格1、規格2」本身。</p>
+        </div><figure class="shot"><img src="img/s039_1.png" alt="匯出商品選項" loading="lazy" onclick="lightbox(this)"><img src="img/s040_1.png" alt="修改／新增選項示意" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：匯出商品選項、修改／新增選項示意</figcaption></figure></details>
+
+        <details><summary>批次上傳商品主圖：兩種命名方式</summary><div class="d-body">
+        <p><b>方法一：資料夾分類</b> — 1 個資料夾 = 1 項商品，資料夾命名為 SPU ID（有選項）或貨號（無選項），內放 1~10 張圖。</p>
+        <p><b>方法二：檔名分類</b> — 圖片命名為「SPU ID_1~10」或「貨號_1~10」，不需資料夾分層。</p>
+        <p>共同規則：Zip 檔 10KB–100MB；每張圖 10KB~300KB、500x500px 以上（建議 1000x1000 可放大檢視）；格式 PNG/JPG/GIF；檔名限英數字。<b>上傳的主圖會完全覆蓋原有主圖</b>，數量變少會自動刪除多餘的。</p>
+        </div><figure class="shot"><img src="img/s044_1.png" alt="批次上傳商品主圖入口" loading="lazy" onclick="lightbox(this)"><img src="img/s046_1.png" alt="方法一：資料夾命名結構" loading="lazy" onclick="lightbox(this)"><img src="img/s048_1.png" alt="方法二：檔名命名結構" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：批次上傳商品主圖入口、方法一：資料夾命名結構、方法二：檔名命名結構</figcaption></figure></details>
+      </div>
+
+      <div class="topic" id="store-manage">
+        <h3>賣場管理：編輯賣場、上架賣場</h3>
+        <p>商品轉出賣場檔後即可從「賣場管理」查詢到（未上架/已上架皆可查），點擊「編輯」進入賣場頁。</p><figure class="shot"><img src="img/s054_1.png" alt="賣場管理查詢列表" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：賣場管理查詢列表</figcaption></figure>
+        <h4>賣場上架流程</h4>
+        <div class="flow">
+          <div class="step">草稿</div><span class="arrow">→點「轉為編輯完成」→</span>
+          <div class="step">編輯完成</div><span class="arrow">→點「上架」→</span>
+          <div class="step">提報審核中</div><span class="arrow">→通路審核通過→</span>
+          <div class="step">已上架（官網可見）</div>
+        </div><figure class="shot"><img src="img/s056_1.png" alt="賣場頁：上架設定" loading="lazy" onclick="lightbox(this)"><img src="img/s058_1.png" alt="賣場管理：上架狀態變更" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：賣場頁：上架設定、賣場管理：上架狀態變更</figcaption></figure>
+        <details><summary>賣場上架的必填欄位（完整表格）</summary><div class="d-body">
+        <table><caption>基本資訊／商品主圖</caption>
+        <tr><th>標題</th><th>必填</th><th>限制</th></tr>
+        <tr><td>商品名稱</td><td class="req">必填</td><td>160 字</td></tr>
+        <tr><td>商品特色</td><td class="opt">選填</td><td>20 字</td></tr>
+        <tr><td>銷售重點</td><td class="opt">選填</td><td>400 字</td></tr>
+        <tr><td>商品主圖</td><td class="req">必填</td><td>10 張</td></tr>
+        <tr><td>影片／影片位置</td><td>若放影片則位置必填</td><td>1 則</td></tr>
+        </table>
+        <table><caption>銷售資訊／詳細說明／分類／規格／SEO</caption>
+        <tr><th>標題</th><th>必填</th><th>限制</th></tr>
+        <tr><td>銷售開始/結束日期、交期、指定到貨日期、溫層類別、隱賣商品</td><td class="req">必填</td><td>日期格式</td></tr>
+        <tr><td>商品材積／是否可退貨</td><td class="opt">選填</td><td>—</td></tr>
+        <tr><td>詳細說明內文</td><td class="opt">選填</td><td>「50,000 − 自訂內容字元數」動態上限（例：自訂內容 3,696 字元 → 上限 46,304 字元）</td></tr>
+        <tr><td>商品品類／商店類別</td><td class="req">必填</td><td>—</td></tr>
+        <tr><td>商品規格</td><td class="opt">選填</td><td>僅全形符號</td></tr>
+        <tr><td>SEO title／keywords／description</td><td class="opt">選填</td><td>120／120／400 字</td></tr>
+        </table>
+        <table><caption>商品選項</caption>
+        <tr><th>標題</th><th>必填</th><th>限制</th></tr>
+        <tr><td>商品選項／規格</td><td class="req">必填</td><td>—</td></tr>
+        <tr><td>國際條碼</td><td class="req">必填</td><td>200 字，可重複</td></tr>
+        <tr><td>商品料號</td><td class="req">必填</td><td>200 字，不可重複</td></tr>
+        <tr><td>外部自訂編號</td><td class="opt">選填</td><td>200 字</td></tr>
+        <tr><td>建議售價／售價／成本／可賣量／安全庫存量／一次最高購買量</td><td class="req">必填</td><td>僅能整數</td></tr>
+        </table>
+        <p class="callout" id="charlimit-note">⚠️ 2026/07/08 上線：「詳細說明內文」新增字元上限檢核＝「50,000 − 自訂內容字元數」。中文/全形符號每字 2 字元，英文/數字/半形符號（含 HTML 標籤）每字 1 字元，計算「原始碼」內容。檢核時機：賣場管理單筆/批次「轉為編輯完成」「上架」，以及賣場異動管理送審時。超過會顯示「詳細說明不可超過 {N} 字元」。</p>
+        <p>備註：從賣場檔修改資料，並不會同步修改商品主檔的欄位，反之亦然。</p>
+        </div></details>
+        <details><summary>賣場已上架後，還能直接改資料嗎？</summary><div class="d-body">
+        <p>不行。已上架賣場此頁<b>無法直接修改資料</b>，須點右上角「新增賣場異動提報」送審。唯獨<b>可賣量不須審核</b>，可直接在「可賣量查詢」頁修改。</p>
+        </div><figure class="shot"><img src="img/s059_1.png" alt="已上架賣場頁：新增賣場異動提報入口" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：已上架賣場頁：新增賣場異動提報入口</figcaption></figure></details>
+      </div>
+
+      <div class="topic" id="store-listing-report">
+        <h3>供應商上架提報單</h3><figure class="shot"><img src="img/s061_1.png" alt="供應商上架提報單列表" loading="lazy" onclick="lightbox(this)"><img src="img/s062_1.png" alt="提報單內容詳情" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：供應商上架提報單列表、提報單內容詳情</figcaption></figure>
+        <p>可查看所有賣場的上架提報單狀態。僅「審核狀態＝待審核」可以取消提報，取消後賣場狀態回到「編輯完成」，需重新點「上架」才能再次送審。</p>
+        <p>若被<b>審核拒絕</b>：至「賣場管理」用「上架狀態」篩選出「審核拒絕」，進入賣場頁重新編輯後再次上架。</p>
+      </div>
+    </section>
+
+    <!-- 3. 賣場異動管理 -->
+    <section class="section" id="change">
+      <h2><span class="num">3</span>賣場異動管理</h2>
+      <p class="desc">賣場一旦上架，任何資料或價格的修改都必須透過「異動提報單」送審，通路審核通過後才會更新到官網。</p>
+
+      <div class="topic" id="change-new">
+        <h3>新增賣場異動提報：兩種提報單怎麼選？</h3><figure class="shot"><img src="img/s066_1.png" alt="新增賣場異動提報：查詢已上架賣場" loading="lazy" onclick="lightbox(this)"><img src="img/s068_1.png" alt="單筆／批次提報方式" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：新增賣場異動提報：查詢已上架賣場、單筆／批次提報方式</figcaption></figure>
+        <table>
+        <tr><th>提報類型</th><th>建立方式</th><th>更新模式</th><th>提報單可修改欄位</th><th>提報單限制</th></tr>
+        <tr><td><b>賣場資料</b></td><td>單筆：新增賣場異動提報／批次：批次修改賣場資料、主圖、新增選項</td><td>支援立即更新</td><td>可改 21 個資料欄位，<b>不含售價</b></td><td>一次只能一張「未結案」提報單</td></tr>
+        <tr><td><b>賣場售價</b></td><td>單筆：新增賣場異動提報／批次：批次修改賣場售價</td><td>支援立即更新／支援預約更新</td><td>售價、賣場名稱、賣場主圖、詳細說明</td><td>預約更新：同一時間僅一張未結案單；立即更新：可多張</td></tr>
+        </table>
+        <p class="callout">💡 一次只能有一張未結案的「賣場資料提報單」；「賣場售價提報單」則可用預約時間分開發多張。</p>
+      </div>
+
+      <div class="topic" id="change-data-form">
+        <h3>賣場資料提報單</h3><figure class="shot"><img src="img/s071_1.png" alt="賣場資料提報單編輯畫面" loading="lazy" onclick="lightbox(this)"><img src="img/s073_1.png" alt="送審後檢視模式（異動標籤）" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：賣場資料提報單編輯畫面、送審後檢視模式（異動標籤）</figcaption></figure>
+        <p>可修改：上架後售賣狀態、賣場名稱、商品特色、銷售重點、商品主圖/影片、新增選項、銷售開始/結束日期、交期、詳細說明、商品分類、商品規格、SEO 設定。</p>
+        <p>編輯完成點「儲存」或「送審」。<b>送審後不可重新編輯</b>，若需更新內容，須先「取消提報」再重新發起新的提報單。有異動的欄位會標註「異動」標籤方便辨識。</p>
+      </div>
+
+      <div class="topic" id="change-price-form">
+        <h3>賣場售價提報單</h3><figure class="shot"><img src="img/s077_1.png" alt="賣場售價提報單編輯畫面" loading="lazy" onclick="lightbox(this)"><img src="img/s079_1.png" alt="送審後檢視模式（漲跌價色碼）" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：賣場售價提報單編輯畫面、送審後檢視模式（漲跌價色碼）</figcaption></figure>
+        <p>可修改：預計異動時間、異動備註、賣場名稱、商品主圖、建議售價/售價/成本、詳細說明內文。</p>
+        <details><summary>欄位填寫規則</summary><div class="d-body"><ul>
+        <li>賣場名稱最多 160 字</li>
+        <li>新建議售價 ≥ 新售價 ≥ 新成本 ≥ 0</li>
+        <li>預計異動時間格式 YYYY/MM/dd hh:mm，須大於現在 30 分鐘、須為整點</li>
+        <li>異動備註最多 20 字</li>
+        </ul></div></details>
+        <details><summary>預約異動時間規則</summary><div class="d-body">
+        <p>指定異動時間須大於現在 30 分鐘（例：要預約 04/01 12:00，最晚 04/01 11:30 前送審）。<b>相同賣場同一時間僅能一張預約單</b>；<b>相同賣場 1 小時內僅能一張預約單</b>。</p>
+        </div></details>
+        <p>送審後可看「異動」標籤比對新舊售價：<span style="color:#c0392b">紅字＝漲價</span>（超過 20% 額外黃底）、黑字＝不變、<span style="color:#1e8e3e">綠字＝降價</span>（超過 20% 額外黃底）。</p>
+      </div>
+
+      <div class="topic" id="change-report-status">
+        <h3>供應商異動提報單：狀態機與各狀態可做的操作</h3><figure class="shot"><img src="img/s082_1.png" alt="供應商異動提報單查詢" loading="lazy" onclick="lightbox(this)"><img src="img/s089_1.png" alt="審核拒絕原因" loading="lazy" onclick="lightbox(this)"><img src="img/s090_1.png" alt="更新失敗原因" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：供應商異動提報單查詢、審核拒絕原因、更新失敗原因</figcaption></figure>
+        <table>
+        <tr><th>審核狀態</th><th>供應商可做</th><th>通路可做</th></tr>
+        <tr><td>尚未送審<span class="badge note">僅資料單有此狀態</span></td><td>編輯、送審、刪除</td><td>看不到（尚未送審）</td></tr>
+        <tr><td>待審核</td><td>取消提報</td><td>審核通過／審核拒絕</td></tr>
+        <tr><td>審核中</td><td>無法操作</td><td>無法操作</td></tr>
+        <tr><td>審核通過/待更新（&gt;30分）</td><td>無法操作</td><td>可再次審核拒絕</td></tr>
+        <tr><td>審核通過/待更新（≤30分）／更新中／已更新／更新失敗／審核拒絕／取消提報</td><td>無法操作</td><td>無法操作</td></tr>
+        </table>
+        <div class="flow">
+          <div class="step">供應商建立提報單</div><span class="arrow">→</span>
+          <div class="step">待審核</div><span class="arrow">→通路審核通過→</span>
+          <div class="step">審核通過/待更新</div><span class="arrow">→(無預約)立即更新／(有預約)時間到→</span>
+          <div class="step">更新中 → 已更新</div>
+        </div>
+        <p class="callout">「更新失敗」只代表<b>特定欄位</b>沒更新成功，其餘有異動的欄位仍會成功更新，可在查詢介面看到失敗原因。</p>
+      </div>
+
+      <div class="topic" id="change-batch">
+        <h3><span class="badge batch">批次</span>售價／主圖／資料／新增選項／外部編號</h3>
+
+        <details><summary>批次修改賣場售價</summary><div class="d-body">
+        <p>先至「新增賣場異動提報」匯出「售價報表」，填寫後從「批次修改賣場售價」匯入。檔案限制 xlsx，單檔 10MB，上限 2000 筆。若要一併改主圖，須改匯入 Zip（Excel + 圖片資料夾，資料夾名＝賣場序號）。</p>
+        <ul>
+          <li>賣場名稱最多160字元；詳細說明最多 32,767 字元（Excel 本身限制）</li>
+          <li>新建議售價 ≥ 新售價 ≥ 新成本 ≥ 0</li>
+          <li>預約時間需整點、大於現在 30 分鐘；相同賣場同一時間/1小時內僅能一張預約單</li>
+        </ul>
+        <p class="callout">情境提醒：若 Zip 內只要改主圖，請改用「批次修改賣場主圖」；同一賣場若售價正確但主圖有誤，整張都不會建立提報單，需一起修正後重新匯入。</p>
+        </div><figure class="shot"><img src="img/s093_1.png" alt="匯出售價報表" loading="lazy" onclick="lightbox(this)"><img src="img/s094_1.png" alt="編輯售價 Excel" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：匯出售價報表、編輯售價 Excel</figcaption></figure></details>
+
+        <details><summary>批次修改賣場主圖</summary><div class="d-body">
+        <p>先到「賣場管理」匯出「賣場所有資料」取得賣場序號，Zip 內資料夾命名＝賣場序號（主圖）／SkuImage（選項圖，圖名＝貨號）。主圖每賣場最多 10 張，10KB~300KB，500x500 以上；選項圖 400x400 以上。上傳會完全覆蓋原主圖。</p>
+        </div><figure class="shot"><img src="img/s105_1.png" alt="下載 Zip 範例格式" loading="lazy" onclick="lightbox(this)"><img src="img/s106_1.png" alt="匯出賣場所有資料" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：下載 Zip 範例格式、匯出賣場所有資料</figcaption></figure></details>
+
+        <details><summary>批次修改賣場資料</summary><div class="d-body">
+        <p>先匯出「資料報表」再編輯匯入。欄位規則：<b>要改</b>→填新內容；<b>不改</b>→留空；<b>改成空值</b>→填「清空」。單檔 10MB，上限 2000 筆。</p>
+        <p><b>詳細說明含圖片</b>的更新方式有兩種：① 若圖片來自 IMS 後台上傳，需先單筆上傳新圖到商品主檔取得新網址，再複製貼到賣場 Excel；② 若用圖床網址，可直接在 Excel 修改網址。</p>
+        </div><figure class="shot"><img src="img/s114_1.png" alt="匯出賣場資料報表" loading="lazy" onclick="lightbox(this)"><img src="img/s115_1.png" alt="編輯賣場資料 Excel" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：匯出賣場資料報表、編輯賣場資料 Excel</figcaption></figure></details>
+
+        <details><summary>批次新增商品賣場選項</summary><div class="d-body">
+        <p>一層選項直接填新內容（如「橘」）；二層選項用半形冒號分隔（如「橘:L」）。<b>僅能依照原賣場的選項規則新增</b>：無選項賣場不可新增選項；一階賣場只能加一階；二階賣場只能加二階。匯入成功會建立「賣場資料」提報單。</p>
+        </div><figure class="shot"><img src="img/s123_1.png" alt="下載新增賣場選項範例" loading="lazy" onclick="lightbox(this)"><img src="img/s124_1.png" alt="編輯選項內容 Excel" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：下載新增賣場選項範例、編輯選項內容 Excel</figcaption></figure></details>
+
+        <details><summary>批次修改賣場外部自訂編號</summary><div class="d-body">
+        <p>先到「賣場管理」匯出「外部自訂編號」再編輯匯入。<b>此功能不會建立提報單</b>，匯入成功即直接更新，無需審核。</p>
+        </div><figure class="shot"><img src="img/s129_1.png" alt="匯出外部自訂編號" loading="lazy" onclick="lightbox(this)"><img src="img/s130_1.png" alt="編輯外部自訂編號 Excel" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：匯出外部自訂編號、編輯外部自訂編號 Excel</figcaption></figure></details>
+      </div>
+
+      <div class="topic" id="change-faq">
+        <h3>提報單常見問題（7 則）</h3>
+        <details><summary>Q1：賣場已上架，能否直接從商品主檔或賣場檔改資料/售價？</summary><div class="d-body"><p>不行，一律要走異動提報單：改售價用「批次修改賣場售價」或「新增售價異動單」；改資料用「批次修改賣場資料/主圖/新增選項」或「新增資料異動單」。</p></div><figure class="shot"><img src="img/s133_1.png" alt="改售價／改資料的操作路徑" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：改售價／改資料的操作路徑</figcaption></figure></details>
+        <details><summary>Q2：賣場資料提報單能不能順便改價錢？</summary><div class="d-body"><p>不行，資料提報單不含售價欄位，改價一定要用售價提報單。</p></div></details>
+        <details><summary>Q3：已有一張「待審核」的資料提報單，能再開第二張嗎？</summary><div class="d-body"><p>不行。尚未送審／待審核／審核通過待更新這幾種狀態下，只能編輯或檢視舊的那一張；其他狀態才能新開一張。</p></div></details>
+        <details><summary>Q4：提報單可以預約更新時間嗎？</summary><div class="d-body"><p>資料提報單不支援預約，審核通過就立即更新；售價提報單支援預約，也可選擇立即更新。</p></div></details>
+        <details><summary>Q5：批次匯入後，在供應商異動提報單查不到剛建立的單？</summary><div class="d-body"><p>先去「批次作業中心」確認匯入是否成功（資料有誤則不會建立提報單），再確認「供應商異動提報單」的篩選類型是否正確（賣場資料/賣場售價）。</p></div></details>
+        <details><summary>Q6：提報單顯示「更新失敗」，是整張都沒更新嗎？</summary><div class="d-body"><p>不是，只有失敗原因提到的欄位沒更新，其餘欄位仍會成功更新。</p></div></details>
+        <details><summary>Q7：匯出/匯入時「詳細說明」超過 Excel 欄位字數上限？</summary><div class="d-body"><p>系統會提供成功資料下載，失敗的賣場序號與原因會顯示在介面上，請針對失敗賣場改用單筆修改。</p></div></details>
+      </div>
+    </section>
+
+    <!-- 4. 庫存管理 -->
+    <section class="section" id="inventory">
+      <h2><span class="num">4</span>庫存管理</h2>
+      <div class="topic" id="inv-query">
+        <h3>可賣量查詢：單筆或批次修改</h3><figure class="shot"><img src="img/s140_1.png" alt="可賣量查詢列表" loading="lazy" onclick="lightbox(this)"><img src="img/s141_1.png" alt="單筆修改可賣量彈窗" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：可賣量查詢列表、單筆修改可賣量彈窗</figcaption></figure>
+        <p><b>單筆</b>：查詢列表點「修改可賣量」，可選「增加/減少」（限正整數）或「絕對值」（0~999,999）。</p>
+        <p><b>批次</b>：先匯出查詢結果，於「批次修改賣場可賣量」欄位填「異動可賣量」與「批次修改方式」：增加填「+2」搭配「加減量」；減少填「-5」搭配「加減量」；設定填「10」搭配「絕對值」。單檔 10MB，上限 2000 筆。<b>只能改可賣量</b>，不支援改售賣狀態/賣場名稱/選項/貨號。</p>
+        <p class="callout">✅ 可賣量修改<b>不須審核</b>，是所有異動類型中唯一可以在賣場已上架後直接生效的欄位。</p>
+      </div>
+      <div class="topic" id="inv-history"><h3>可賣量修改歷程</h3><p>修改可賣量後，約 5 分鐘內即可在「可賣量修改歷程」查到歷程記錄。</p><figure class="shot"><img src="img/s146_1.png" alt="可賣量修改歷程查詢" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：可賣量修改歷程查詢</figcaption></figure></div>
+    </section>
+
+    <!-- 5. 訂單 -->
+    <section class="section" id="order">
+      <h2><span class="num">5</span>訂單管理</h2>
+      <div class="topic"><h3>訂單查詢</h3><figure class="shot"><img src="img/s148_1.png" alt="訂單查詢列表" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：訂單查詢列表</figcaption></figure>
+      <p>可查詢所有訂單的狀態及相關資訊。</p>
+      <p class="callout">📞 2024/04/25 之後的訂單，收件人電話為虛擬號碼（20 碼），出貨完成後 <b>14 天</b>虛擬號碼即失效。</p>
+      </div>
+    </section>
+
+    <!-- 6. 出貨 -->
+    <section class="section" id="ship">
+      <h2><span class="num">6</span>出貨管理</h2>
+      <div class="topic"><h3>宅配出貨</h3><figure class="shot"><img src="img/s151_1.png" alt="待出貨訂單查詢" loading="lazy" onclick="lightbox(this)"><img src="img/s155_1.png" alt="批次出貨範例檔填寫" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：待出貨訂單查詢、批次出貨範例檔填寫</figcaption></figure>
+        <p><b>單筆</b>：查詢待出貨訂單，直接填寫物流商和物流單號。</p>
+        <p><b>批次</b>：匯出查詢結果 → 下載範例檔 → 把「訂單子單號」複製到範例檔並填上物流商/單號 → 匯入 → 至批次作業中心查看執行狀態 → 完成後履約狀態更新為「已出貨」。</p>
+      </div>
+    </section>
+
+    <!-- 7. 退貨 -->
+    <section class="section" id="return">
+      <h2><span class="num">7</span>退貨管理</h2>
+      <div class="topic"><h3>退貨處理</h3><figure class="shot"><img src="img/s160_1.png" alt="待退貨訂單查詢" loading="lazy" onclick="lightbox(this)"><img src="img/s161_1.png" alt="回填退貨物流單號" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：待退貨訂單查詢、回填退貨物流單號</figcaption></figure>
+        <p>查詢待退貨訂單，針對單筆「回填退貨物流單號」（選物流商＋輸入單號）。確認後狀態更新為「退貨完成」，系統會<b>自動退款</b>並同步狀態到消費者前台。</p>
+      </div>
+    </section>
+
+    <!-- 8. 報表 -->
+    <section class="section" id="report">
+      <h2><span class="num">8</span>報表管理</h2>
+      <div class="topic"><h3>對帳報表</h3><figure class="shot"><img src="img/s164_1.png" alt="對帳報表匯出設定" loading="lazy" onclick="lightbox(this)"><img src="img/s165_1.png" alt="對帳報表匯出結果範例" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：對帳報表匯出設定、對帳報表匯出結果範例</figcaption></figure>
+        <p>選擇「出貨/退貨日期」區間即可匯出，從批次作業中心下載。每月 1 號至平台下載，<b>成本總價（含稅）加總</b>為本期對帳金額（負數代表本期或上期有退貨）。</p>
+        <details><summary>發票開立與寄送資訊</summary><div class="d-body">
+        <ul>
+          <li>抬頭：統一生活事業股份有限公司；統編：89589328</li>
+          <li>發票金額：依對帳報表「成本總價」合計（含稅）；應稅/免稅品項需分別開立</li>
+          <li>發票日期不可跨年度</li>
+          <li>紙本發票寄送：台北市內湖區內湖路一段120巷15弄25號4樓</li>
+          <li>電子發票查詢／下載：<a href="https://einvoice.pic.net.tw/b2beivcp/" target="_blank">統一資訊 PIC 電子發票平台</a></li>
+        </ul>
+        <p class="callout">⚠️ 對帳金額或發票聯絡窗口如有異動，請以平台公告或 IMS 系統顯示為準，本手冊聯絡資訊可能因人員異動而更新。</p>
+        </div></details>
+      </div>
+    </section>
+
+    <!-- 9. 系統 -->
+    <section class="section" id="system">
+      <h2><span class="num">9</span>系統功能</h2>
+      <div class="topic"><h3>批次作業中心</h3><figure class="shot"><img src="img/s168_1.png" alt="批次作業中心下載列表" loading="lazy" onclick="lightbox(this)"><figcaption>畫面截圖：批次作業中心下載列表</figcaption></figure><p>所有批次上傳/匯出的檔案、成功與錯誤回檔，都集中在「批次作業中心」下載查看，是所有批次操作的共同結果查詢站。</p></div>
+    </section>
+
+    <!-- Glossary -->
+    <section class="section" id="glossary">
+      <h2><span class="num">📖</span>名詞與欄位對照表</h2>
+      <p class="desc">把手冊中反覆出現、容易混淆的名詞集中放在這裡，不用再去翻找是哪一頁提到的。</p>
+      <div class="glossary-grid">
+        <div class="gterm"><h4>商品（主檔） vs 賣場（檔）</h4><p>商品主檔＝基本資料，可轉出多個賣場檔；賣場檔才是「一個官網商品頁」，上架與異動都是對賣場檔操作。</p></div>
+        <div class="gterm"><h4>上游 / 下游</h4><p>上游＝通路（負責審核）；下游＝供應商（負責提報）。</p></div>
+        <div class="gterm"><h4>上架提報單 vs 異動提報單</h4><p>上架提報單：賣場第一次上架時送出；異動提報單：賣場已上架後要改資料/售價時送出。</p></div>
+        <div class="gterm"><h4>賣場資料提報單 vs 賣場售價提報單</h4><p>資料單改 21 項欄位（不含售價）、一次僅能 1 張未結案；售價單專改售價/名稱/主圖/詳細說明，可預約時間、可多張並存。</p></div>
+        <div class="gterm"><h4>單筆 vs 批次</h4><p>單筆＝介面直接操作 1 筆；批次＝下載 Excel/Zip 範例檔，填寫後整批匯入，透過「批次作業中心」查結果。</p></div>
+        <div class="gterm"><h4>IMS 商品 / IMS 賣場</h4><p>IMS 商品＝只存在 IMS 的商品主檔；IMS 賣場＝對應 OSM 商品頁。</p></div>
+        <div class="gterm"><h4>可賣量</h4><p>即庫存／可販售數量，是唯一「已上架也能直接改、不用審核」的欄位。</p></div>
+        <div class="gterm"><h4>SPU / SKU（貨號）</h4><p>SPU 編號＝多選項商品的母層編號；貨號（SKU）＝每個選項的唯一料號，不可重複。</p></div>
+      </div>
+    </section>
+
+    <!-- FAQ 總表 -->
+    <section class="section" id="faq">
+      <h2><span class="num">❓</span>常見問題總表</h2>
+      <p class="desc">原本分散在各批次功能頁面的錯誤訊息與情境 QA，集中在這裡並可依主題篩選，方便直接搜尋關鍵字。</p>
+      <div class="faq-filter">
+        <button class="active" data-cat="all">全部</button>
+        <button data-cat="product">商品／貨號</button>
+        <button data-cat="image">圖片上傳</button>
+        <button data-cat="report">提報單</button>
+        <button data-cat="price">售價</button>
+      </div>
+      <div id="faqList">
+        <div class="faq-item" data-cat="product"><details><summary>批次新增商品：貨號重複怎麼辦？</summary><div class="d-body"><p>代表 Excel 中有重複貨號，或該貨號已於 IMS 建檔過。貨號全站不可重複，請確認後修正再匯入。</p></div></details></div>
+        <div class="faq-item" data-cat="product"><details><summary>商品選項為「有」但未填 SPU 編號？</summary><div class="d-body"><p>多選項商品 SPU 編號為必填，請補上後再匯入，且同一 SPU 底下履約模式、規格1 內容須相同。</p></div></details></div>
+        <div class="faq-item" data-cat="image"><details><summary>圖片上傳「檔案解析度需 500x500 以上」？</summary><div class="d-body"><p>所有商品主圖／賣場主圖皆要求最小 500x500px（選項圖 400x400px），建議直接上傳 1000x1000px，前台可放大檢視。</p></div></details></div>
+        <div class="faq-item" data-cat="image"><details><summary>批次上傳主圖，圖片數量超過上限？</summary><div class="d-body"><p>目前商品主圖 / 賣場主圖上限為 10 張，超過需精簡後再上傳；上傳會完全覆蓋原主圖，數量變少會自動刪除多餘的。</p></div></details></div>
+        <div class="faq-item" data-cat="report"><details><summary>已有一張待審核的資料提報單，可以再開一張嗎？</summary><div class="d-body"><p>不行，同一賣場的資料提報單一次只能有一張「未結案」（尚未送審／待審核／審核通過待更新）。</p></div></details></div>
+        <div class="faq-item" data-cat="report"><details><summary>提報單「更新失敗」代表整張都沒更新嗎？</summary><div class="d-body"><p>不是，只代表失敗原因中提到的欄位沒更新，其餘欄位仍會成功更新。</p></div></details></div>
+        <div class="faq-item" data-cat="price"><details><summary>售價提報單可以預約幾張？</summary><div class="d-body"><p>相同賣場「同一時間」僅能一張預約單，且「1 小時內」僅能一張預約單；立即更新（不預約）則可同時存在多張。</p></div></details></div>
+        <div class="faq-item" data-cat="price"><details><summary>新售價、新建議售價、新成本的大小關係？</summary><div class="d-body"><p>規則為：新建議售價 ≥ 新售價 ≥ 新成本 ≥ 0，不符合會被錯誤回檔擋下。</p></div></details></div>
+        <div class="faq-item" data-cat="report price"><details><summary>詳細說明內文超過字數上限怎麼辦？</summary><div class="d-body"><p>賣場頁的詳細說明內文字元上限為「50,000 − 自訂內容字元數」動態計算（中文/全形符號每字2字元，英文/數字/半形符號每字1字元）；批次匯入時 Excel 本身另有 32,767 字元限制，超過需精簡內容或改用單筆編輯。</p></div></details></div>
+      </div>
+    </section>
+
+    <!-- Changelog moved to bottom -->
+    <section class="section" id="changelog">
+      <h2><span class="num">🕘</span>更新紀錄</h2>
+      <p class="desc">原始版本把更新紀錄放在手冊最前面，第一眼看到的是變更日誌而不是操作內容。優化後移到手冊最後，當作查詢用的附錄。</p>
+      <table>
+        <tr><th>更版日期</th><th>更版說明</th><th>更新者</th></tr>
+        <tr><td>2026/07/02<br><span class="opt">上線時間 2026/07/08</span></td>
+        <td>賣場「詳細說明內文」欄位新增字元上限檢核：以「50,000 − 自訂內容字元數」動態計算上限。更新範圍：[賣場頁] 上架必填欄位、[賣場售價提報單] 提報單欄位填寫規則。<a href="#charlimit-note">查看詳細規則 →</a></td>
+        <td>Silvia Wang</td></tr>
+        <tr><td>2024/10/16</td><td>IMS 側欄名稱更新（供應商角度／通路角度命名調整）</td><td>—</td></tr>
+        <tr><td>2024/04/25</td><td>訂單收件人電話改為虛擬號碼（20碼）；賣場售價提報單版本更新</td><td>—</td></tr>
+        <tr><td>2025/02/20</td><td>手冊版本更新</td><td>—</td></tr>
+      </table>
+    </section>
+
+    <p class="footer-note">此頁為 IMS 操作手冊資訊架構優化提案（方案二：互動網頁版），內容整理自現行康是美版操作手冊。如發現資料與系統實際畫面不符，請以 IMS 系統畫面為準，並回報負責窗口更新。</p>
+    </div>
+
+    <!-- ============ TASK VIEW ============ -->
+    <div id="taskView">
+      <div class="hero">
+        <span class="tag">依情境瀏覽</span>
+        <h1>我想做的事情是……</h1>
+        <p>不確定功能在哪個選單底下？用「我想做什麼」直接找到對應的操作說明，取代原本要先知道選單名稱才能查的模組式目錄。</p>
+      </div>
+
+      <div class="task-card">
+        <h4>🆕 我要上架一個全新商品</h4>
+        <p>從建立商品主檔開始，到轉出賣場、編輯必填欄位、送出上架提報單。</p>
+        <div class="links"><a href="#product-single">① 新增商品主檔</a><a href="#store-manage">② 編輯賣場並上架</a><a href="#store-listing-report">③ 查看上架審核狀態</a></div>
+      </div>
+      <div class="task-card">
+        <h4>📝 我要修改已上架商品的資料（名稱／圖片／說明／規格）</h4>
+        <p>已上架賣場不能直接編輯，需送出「賣場資料提報單」。</p>
+        <div class="links"><a href="#change-new">新增資料異動單</a><a href="#change-data-form">賣場資料提報單說明</a><a href="#change-batch">批次修改賣場資料／主圖</a></div>
+      </div>
+      <div class="task-card">
+        <h4>💰 我要調整售價</h4>
+        <p>售價修改一律走「賣場售價提報單」，可選擇立即更新或預約時間。</p>
+        <div class="links"><a href="#change-price-form">賣場售價提報單說明</a><a href="#change-batch">批次修改賣場售價</a></div>
+      </div>
+      <div class="task-card">
+        <h4>📦 我要調整可賣量／庫存</h4>
+        <p>唯一不需要審核、可直接生效的欄位。</p>
+        <div class="links"><a href="#inv-query">可賣量查詢（單筆/批次）</a><a href="#inv-history">可賣量修改歷程</a></div>
+      </div>
+      <div class="task-card">
+        <h4>🖼️ 圖片上傳失敗 / 想批次換圖</h4>
+        <p>檢查解析度、檔案大小、命名規則是否符合要求。</p>
+        <div class="links"><a href="#product-batch">批次上傳商品主圖</a><a href="#change-batch">批次修改賣場主圖</a><a href="#faq">常見錯誤訊息</a></div>
+      </div>
+      <div class="task-card">
+        <h4>🚚 我要處理出貨 / 填物流單號</h4>
+        <div class="links"><a href="#ship">宅配出貨（單筆／批次）</a></div>
+      </div>
+      <div class="task-card">
+        <h4>↩️ 我要處理退貨退款</h4>
+        <div class="links"><a href="#return">退貨處理</a></div>
+      </div>
+      <div class="task-card">
+        <h4>🧾 我要對帳 / 請款開發票</h4>
+        <div class="links"><a href="#report">對帳報表與發票資訊</a></div>
+      </div>
+      <div class="task-card">
+        <h4>❓ 提報單狀態看不懂 / 卡住了</h4>
+        <div class="links"><a href="#change-report-status">狀態機說明</a><a href="#change-faq">提報單常見問題 7 則</a></div>
+      </div>
+      <div class="task-card">
+        <h4>📖 搞不清楚商品／賣場／提報單這些名詞</h4>
+        <div class="links"><a href="#glossary">名詞與欄位對照表</a><a href="#intro-terms">IMS 名詞解釋</a></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="lightboxOverlay" onclick="this.style.display='none'"><img id="lightboxImg" src="" alt=""></div>
+
+<script>
+function lightbox(imgEl){
+  const overlay = document.getElementById('lightboxOverlay');
+  document.getElementById('lightboxImg').src = imgEl.src;
+  overlay.style.display = 'flex';
+}
+// ---------- View toggle ----------
+const viewBtns = document.querySelectorAll('.view-toggle button');
+viewBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    viewBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const v = btn.dataset.view;
+    document.getElementById('moduleView').style.display = v==='module' ? 'block':'none';
+    document.getElementById('taskView').style.display = v==='task' ? 'block':'none';
+    document.getElementById('sidebar').style.display = v==='module' ? 'block':'none';
+    window.scrollTo(0,0);
+  });
+});
+
+// ---------- FAQ filter ----------
+document.querySelectorAll('.faq-filter button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.faq-filter button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+    document.querySelectorAll('.faq-item').forEach(item=>{
+      if(cat==='all' || item.dataset.cat.split(' ').includes(cat)){
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+  });
+});
+
+// ---------- Sidebar active highlight on scroll ----------
+const navLinks = document.querySelectorAll('#sidebar a');
+const targets = Array.from(navLinks).map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+window.addEventListener('scroll', ()=>{
+  let current = null;
+  targets.forEach(t=>{ if(t.getBoundingClientRect().top - 90 <= 0) current = t; });
+  navLinks.forEach(a=>a.classList.remove('active'));
+  if(current){
+    const id = '#'+current.id;
+    const link = Array.from(navLinks).find(a=>a.getAttribute('href')===id);
+    if(link) link.classList.add('active');
+  }
+}, {passive:true});
+
+// ---------- Search ----------
+const searchBox = document.getElementById('searchBox');
+const searchResults = document.getElementById('searchResults');
+function buildIndex(){
+  const nodes = document.querySelectorAll('#moduleView .topic, #moduleView details, #moduleView .gterm, #moduleView .faq-item');
+  const idx = [];
+  nodes.forEach(n=>{
+    let titleEl = n.querySelector('h3, summary, h4');
+    let title = titleEl ? titleEl.textContent.trim() : '';
+    let text = n.textContent.trim();
+    let anchorEl = n.closest('[id]');
+    idx.push({title, text: text.slice(0,4000), id: anchorEl ? anchorEl.id : null, el:n});
+  });
+  return idx;
+}
+let searchIndex = [];
+window.addEventListener('load', ()=>{ searchIndex = buildIndex(); });
+
+searchBox.addEventListener('input', ()=>{
+  const q = searchBox.value.trim();
+  if(q.length < 1){ searchResults.style.display='none'; return; }
+  const ql = q.toLowerCase();
+  const matches = searchIndex.filter(item=> item.text.toLowerCase().includes(ql) || item.title.toLowerCase().includes(ql)).slice(0,12);
+  if(matches.length===0){
+    searchResults.innerHTML = '<div style="color:#999">找不到符合的內容</div>';
+  } else {
+    searchResults.innerHTML = matches.map((m,i)=>{
+      const idx = m.text.toLowerCase().indexOf(ql);
+      let snippet = m.text.substring(Math.max(0,idx-20), idx+60).replace(/\n/g,' ');
+      return `<div data-i="${i}"><b>${m.title||'（內容）'}</b><div class="sr-path">…${snippet}…</div></div>`;
+    }).join('');
+    Array.from(searchResults.children).forEach((div,i)=>{
+      div.addEventListener('click', ()=>{
+        // switch to module view first
+        viewBtns.forEach(b=>b.classList.remove('active'));
+        document.querySelector('.view-toggle button[data-view="module"]').classList.add('active');
+        document.getElementById('moduleView').style.display='block';
+        document.getElementById('taskView').style.display='none';
+        document.getElementById('sidebar').style.display='block';
+
+        const m = matches[i];
+        if(m.el.tagName === 'DETAILS'){ m.el.open = true; }
+        m.el.scrollIntoView({behavior:'smooth', block:'center'});
+        m.el.style.outline = '2px solid var(--accent)';
+        setTimeout(()=>{ m.el.style.outline=''; }, 2000);
+        searchResults.style.display='none';
+        searchBox.value='';
+      });
+    });
+  }
+  searchResults.style.display='block';
+});
+document.addEventListener('click', (e)=>{
+  if(!e.target.closest('.search-wrap')) searchResults.style.display='none';
+});
+</script>
+</body>
+</html>
